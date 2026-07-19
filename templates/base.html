@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Braluma — Espejos con Iluminación LED Integrada{% endblock %}</title>
+  <meta name="description" content="Espejos de alta gama con iluminación LED integrada, control de temperatura Kelvin y tecnología antivaho. Transforma tus espacios con luz pura y elegancia.">
+  
+  <!-- Lenis Smooth Scroll CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css">
+  
+  <!-- Braluma CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navigation Bar (Apple Style Header) -->
+  <nav class="navbar" id="navbar">
+    <a href="{% url 'home' %}" class="brand-logo" id="nav-brand-logo">
+      <span class="logo-dot"></span>
+      BRALUMA
+    </a>
+    
+    <ul class="nav-links">
+      <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" id="nav-link-home">Inicio</a></li>
+      <li><a href="{% url 'coleccion' %}" class="nav-link {% if request.resolver_match.url_name == 'coleccion' %}active{% endif %}" id="nav-link-coleccion">Colección</a></li>
+      {% if user.is_staff %}
+        <li><a href="{% url 'dashboard_metricas' %}" class="nav-link" id="nav-link-dashboard" style="color: var(--accent-amber); font-weight: 600;">📊 Métricas Staff</a></li>
+        <li><a href="{% url 'admin:index' %}" class="nav-link" id="nav-link-admin" target="_blank">⚙️ Admin</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <!-- Main Content Block -->
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="footer-logo">BRALUMA</div>
+    <p>Iluminación LED de Alta Precisión & Espejos Arquitectónicos</p>
+    <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+      &copy; {% now "Y" %} Braluma Inc. Todos los derechos reservados. | Fase 1
+    </p>
+  </footer>
+
+  <!-- Animation Libraries: GSAP + ScrollTrigger + Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Main JS -->
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Braluma — La Luz que Enciende tu Espacio | Narrativa de Marca{% endblock %}
+
+{% block content %}
+<!-- Acto 1: Apertura (Hero de Marca) -->
+<section class="hero-container" id="hero-section">
+  <div class="hero-vignette"></div>
+  <div class="hero-glow-layer"></div>
+
+  <div class="hero-content-stack">
+    <p class="hero-eyebrow" id="hero-eyebrow">
+      {{ hero_config.titulo_eyebrow|default:"ILUMINACIÓN ARQUITECTÓNICA" }}
+    </p>
+    
+    <h1 class="hero-title" id="hero-title">
+      {% if hero_config and hero_config.titulo_principal %}
+        {{ hero_config.titulo_principal|safe }}
+      {% else %}
+        La Luz que Enciende <em>tu Espacio</em>
+      {% endif %}
+    </h1>
+
+    <p class="hero-subtitle" id="hero-subtitle">
+      {{ hero_config.subtitulo|default:"Espejos de alta gama diseñados para proyectar luz continua de 360 grados con graduación Kelvin y tecnología antivaho." }}
+    </p>
+
+    <div class="hero-cta-group" id="hero-cta-group">
+      <a href="#filosofia" class="btn-outline" style="border-radius: var(--radius-full);">
+        Descubrir la Historia &darr;
+      </a>
+    </div>
+
+    <!-- Hero Mirror Stage -->
+    <div class="hero-mirror-stage" id="hero-mirror-stage">
+      <img src="{% if hero_config and hero_config.imagen_hero %}{{ hero_config.imagen_hero.url }}{% else %}{% static 'images/default_hero_mirror.jpg' %}{% endif %}" 
+           alt="Espejo Hero Braluma" 
+           style="object-position: {{ hero_config.posicion_imagen|default:'center center' }};">
+    </div>
+  </div>
+</section>
+
+<!-- Acto 2: El Problema / Filosofía de Marca -->
+<section class="catalog-section" id="filosofia" style="padding: 10rem 2rem; text-align: center; background: var(--bg-dark);">
+  <div style="max-width: 900px; margin: 0 auto;">
+    <p class="product-shape-tag" style="color: var(--accent-amber); margin-bottom: 1.5rem;">CONCEPTO & PROPOSICIÓN</p>
+    <h2 class="section-title" style="font-size: clamp(2.2rem, 4.5vw, 3.8rem); line-height: 1.15; font-weight: 700; color: var(--text-primary); margin-bottom: 2rem;">
+      La mayoría de espejos con luz pierden resplandor con los años.<br>
+      <span style="color: var(--accent-gold);">Braluma se concibió para mantener su pureza cromática como el primer día.</span>
+    </h2>
+    <p class="section-subtitle" style="font-size: 1.2rem; max-width: 680px; margin: 0 auto; color: var(--text-secondary); line-height: 1.7;">
+      Combinamos componentes electrónicos de especificación profesional con cristal sin cobre de máxima reflectividad para transformar la experiencia de iluminación en tu hogar.
+    </p>
+  </div>
+</section>
+
+<!-- Acto 3: La Revelación Técnica (Scroll Sticky de 4 Pasos con Transición Dinámica de Imágenes en Sincronía) -->
+<section class="sticky-feature-section" id="destacado-sticky">
+  <div class="sticky-viewport-wrapper">
+    <div class="sticky-grid">
+      <!-- Media Stage (Dynamic Image Sequence Frame with Smooth Crossfade) -->
+      <div class="sticky-media-col">
+        <div class="sticky-mirror-frame">
+          <img id="sticky-img-step-1" 
+               src="{% static 'images/steps/step1.png' %}" 
+               alt="Resplandor 360 Grados Continuo" 
+               class="sticky-dynamic-img active">
+          
+          <img id="sticky-img-step-2" 
+               src="{% static 'images/steps/step2.png' %}" 
+               alt="Graduación Kelvin de 2700K a 6500K" 
+               class="sticky-dynamic-img">
+          
+          <img id="sticky-img-step-3" 
+               src="{% static 'images/steps/step3.png' %}" 
+               alt="Defroster Térmico Antivaho Activo" 
+               class="sticky-dynamic-img">
+          
+          <img id="sticky-img-step-4" 
+               src="{% static 'images/steps/step4.png' %}" 
+               alt="Control Capacitivo Touch Sensor" 
+               class="sticky-dynamic-img">
+        </div>
+      </div>
+
+      <!-- Text Step Cards (Progressive Opacity/Scale Step Animations) -->
+      <div class="sticky-text-col">
+        <!-- Step 1: Overall Design -->
+        <div class="sticky-step-card active" id="sticky-step-1">
+          <span class="sticky-step-badge">1. ARQUITECTURA DE LUZ PERIMETRAL</span>
+          <h2 class="sticky-step-headline">Resplandor 360° Continuo.</h2>
+          <p class="sticky-step-desc">
+            Tira de alta densidad de diodos que elimina zonas de sombra y proyecta una luz homogénea en todo el entorno.
+          </p>
+        </div>
+
+        <!-- Step 2: Kelvin Temperature -->
+        <div class="sticky-step-card" id="sticky-step-2">
+          <span class="sticky-step-badge">2. GRADUACIÓN KELVIN</span>
+          <h2 class="sticky-step-headline">De 2700K Warm a 6500K Cool.</h2>
+          <p class="sticky-step-desc">
+            Ajusta la atmósfera según el momento del día: luz cálida acogedora para la noche o luz blanca neutra para cuidado personal preciso.
+          </p>
+        </div>
+
+        <!-- Step 3: Antivaho System -->
+        <div class="sticky-step-card" id="sticky-step-3">
+          <span class="sticky-step-badge">3. DEFROSTER TÉRMICO</span>
+          <h2 class="sticky-step-headline">Superficie Antivaho Activa.</h2>
+          <p class="sticky-step-desc">
+            Panel calefactor ultrafino integrado detrás del espejo que previene la condensación de vapor de manera uniforme.
+          </p>
+        </div>
+
+        <!-- Step 4: Touch Control -->
+        <div class="sticky-step-card" id="sticky-step-4">
+          <span class="sticky-step-badge">4. CONTROL CAPACITIVO</span>
+          <h2 class="sticky-step-headline">Sensores Táctiles Silenciosos.</h2>
+          <p class="sticky-step-desc">
+            Respuesta inmediata con toque suave bajo el cristal para encendido y regulación de intensidad dimmer.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Acto 4: El Ambiente Real -->
+<section class="catalog-section" id="ambiente" style="padding: 8rem 2rem; background: var(--bg-deep); text-align: center;">
+  <div style="max-width: 1000px; margin: 0 auto;">
+    <p class="product-shape-tag" style="color: var(--accent-amber); margin-bottom: 1rem;">INTEGRACIÓN ARQUITECTÓNICA</p>
+    <h2 class="section-title" style="font-size: clamp(2rem, 3.8vw, 3.2rem); margin-bottom: 1.5rem;">
+      Diseñado para convivir con la arquitectura de tu espacio.
+    </h2>
+    <p class="section-subtitle" style="max-width: 650px; margin: 0 auto 3.5rem; color: var(--text-secondary);">
+      Un elemento que aporta presencia visual tanto encendido como apagado.
+    </p>
+
+    <div style="width: 100%; aspect-ratio: 16 / 9; max-height: 540px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);">
+      <img src="/media/hero/ambiente_lifestyle.png" 
+           alt="Espejo Braluma en ambiente real de lujo" 
+           style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+  </div>
+</section>
+
+<!-- Acto 5: Cierre & Puente a la Colección -->
+<section style="padding: 10rem 2rem; text-align: center; background: var(--bg-dark);">
+  <div style="max-width: 750px; margin: 0 auto;">
+    <h2 class="section-title" style="font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800; margin-bottom: 1.2rem;">
+      Explora la Colección Braluma
+    </h2>
+    <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 3rem; line-height: 1.6;">
+      Conoce todas las geometrías, dimensiones y especificaciones de nuestra línea de espejos LED arquitectónicos.
+    </p>
+    <div>
+      <a href="{% url 'coleccion' %}" class="btn-primary" style="padding: 1.1rem 2.8rem; font-size: 1.1rem;" id="btn-home-to-coleccion">
+        Ver Colección Completa & Precios &rarr;
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/hero_parallax.js' %}"></script>
+{% endblock %}

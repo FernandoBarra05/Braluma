@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Braluma — {{ espejo.nombre }} | Especificaciones Técnicas{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+  <a href="{% url 'coleccion' %}"
+    style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.9rem;"
+    id="back-to-catalog-link">
+    &larr; Volver a la Colección
+  </a>
+
+  <div class="detail-grid">
+    <!-- Gallery Column -->
+    <div class="gallery-wrapper">
+      <div class="main-image-stage">
+        {% if espejo.primera_imagen %}
+        <img id="main-gallery-image" src="{{ espejo.primera_imagen }}" alt="{{ espejo.nombre }}">
+        {% else %}
+        <div class="placeholder-mirror-art" style="width: 260px; height: 260px; font-size: 1.1rem;">
+          <span>{{ espejo.ancho_cm }}x{{ espejo.alto_cm }} CM</span>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if imagenes|length > 1 %}
+      <div class="thumbnails-row">
+        {% for img in imagenes %}
+        <div class="thumb-item {% if forloop.first %}active{% endif %}" data-full="{{ img.imagen.url }}"
+          data-alt="{{ img.alt_text }}">
+          <img src="{{ img.imagen.url }}" alt="{{ img.alt_text }}">
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Info & Specs Column -->
+    <div>
+      <span class="product-shape-tag">{{ espejo.categoria.nombre }} &bull; FORMA {{ espejo.get_forma_display }}</span>
+      <h1 class="font-title" style="font-size: 2.8rem; margin-bottom: 0.5rem;">{{ espejo.nombre }}</h1>
+
+      <div class="product-price" style="font-size: 2.2rem; color: var(--accent-amber); margin-bottom: 1.5rem;">
+        S/ {{ espejo.precio }} <span style="font-size: 1rem; color: var(--text-muted);">INC. IGV</span>
+      </div>
+
+      <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.8rem;">
+        {{ espejo.descripcion }}
+      </p>
+
+      <!-- Technical Spec Sheet Tag -->
+      <div class="tech-spec-sheet">
+        <div class="tech-spec-header">
+          📋 FICHA TÉCNICA DE ILUMINACIÓN — BRALUMA SPEC-SHEET
+        </div>
+
+        <div class="tech-spec-row">
+          <span class="tech-spec-label">Dimensiones Fisicas</span>
+          <span class="tech-spec-value">{{ espejo.ancho_cm }} cm (Ancho) &times; {{ espejo.alto_cm }} cm (Alto)</span>
+        </div>
+
+        <div class="tech-spec-row">
+          <span class="tech-spec-label">Geometria de Bastidor</span>
+          <span class="tech-spec-value">{{ espejo.get_forma_display|upper }}</span>
+        </div>
+
+        <div class="tech-spec-row">
+          <span class="tech-spec-label">Temperatura de Luz</span>
+          <span class="tech-spec-value">{{ espejo.temperatura_min_k }}K a {{ espejo.temperatura_max_k }}K (Cálido a
+            Frío)</span>
+        </div>
+
+        <!-- Visual Kelvin Dial Component -->
+        <div style="margin: 1.2rem 0 0.8rem;">
+          <div class="kelvin-dial-label">
+            <span>2700K Cálido</span>
+            <span>4500K Neutro</span>
+            <span>6500K Frío</span>
+          </div>
+          <div class="kelvin-track-bar" data-min="{{ espejo.temperatura_min_k }}"
+            data-max="{{ espejo.temperatura_max_k }}">
+            <div class="kelvin-marker-highlight"></div>
+          </div>
+        </div>
+
+        <div class="tech-spec-row">
+          <span class="tech-spec-label">Control de Intensidad</span>
+          <span class="tech-spec-value">{% if espejo.regulable %}SI (Sensor Touch Integrado){% else %}ESTÁNDAR{% endif %}</span>
+        </div>
+
+        <div class="tech-spec-row">
+          <span class="tech-spec-label">Defroster Antivaho</span>
+          <span class="tech-spec-value">{% if espejo.antivaho %}SISTEMA TÉRMICO ACTIVO (SI){% else %}NO INCLUIDO{% endif %}</span>
+        </div>
+
+        <div class="tech-spec-row" style="border-bottom: none;">
+          <span class="tech-spec-label">Disponibilidad en Almacén</span>
+          <span class="tech-spec-value" style="color: #27ae60;">INVENTARIO DISPONIBLE ({{ espejo.stock }} Unid)</span>
+        </div>
+      </div>
+
+      <!-- Quote & WhatsApp Capture Form Card -->
+      <div class="quote-card">
+        <h3 class="font-title" style="font-size: 1.5rem; margin-bottom: 0.4rem;">Cotizar este Modelo</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Completa tus datos para registrar tu solicitud e iniciar conversación directa con un asesor Braluma por
+          WhatsApp.
+        </p>
+
+        <form method="POST" action="{% url 'espejo_detail' espejo.slug %}" id="quote-lead-form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label" for="nombre">Nombre Completo *</label>
+            <input type="text" name="nombre" id="nombre" class="form-input" placeholder="Ej. Carlos Mendoza" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono / WhatsApp *</label>
+              <input type="tel" name="telefono" id="telefono" class="form-input" placeholder="Ej. +51 924280775"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Correo Electrónico (Opcional)</label>
+              <input type="email" name="email" id="email" class="form-input" placeholder="carlos@correo.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mensaje">Consulta o Medidas Especiales</label>
+            <textarea name="mensaje" id="mensaje" rows="3" class="form-textarea"
+              placeholder="¿Tienes alguna preferencia en instalación o consulta sobre la iluminación?"></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem;" id="btn-submit-whatsapp-quote">
+            <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12.031 2c-5.517 0-9.986 4.469-9.986 9.986 0 1.763.459 3.479 1.33 4.996l-1.416 5.176 5.297-1.389c1.465.799 3.118 1.218 4.774 1.218 5.518 0 9.986-4.469 9.986-9.986 0-5.517-4.468-9.986-9.985-9.986zm5.834 14.167c-.247.694-1.222 1.272-1.996 1.439-.53.114-1.222.204-3.567-.768-2.997-1.243-4.925-4.288-5.074-4.487-.149-.199-1.214-1.616-1.214-3.08 0-1.464.767-2.186 1.04-2.484.272-.297.594-.371.792-.371.198 0 .396.002.569.011.183.009.431-.07.674.515.247.594.842 2.055.916 2.204.074.149.124.322.025.52-.099.198-.149.322-.297.495-.149.173-.312.386-.446.52-.148.149-.303.311-.13.608.173.297.77 1.27 1.652 2.056 1.133 1.01 2.09 1.324 2.387 1.472.297.149.471.124.644-.074.173-.198.743-.866.941-1.163.198-.297.396-.247.669-.149.272.099 1.733.817 2.03 0.965.297.149.495.223.569.347.074.124.074.718-.173 1.412z" />
+            </svg>
+            Solicitar Cotización vía WhatsApp
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

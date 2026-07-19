@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Colección & Tienda Braluma | Espejos LED Arquitectónicos{% endblock %}
+
+{% block content %}
+<section class="catalog-section" id="catalogo" style="padding-top: 8rem;">
+  <div class="section-header">
+    <h1 class="section-title">Colección Braluma</h1>
+    <p class="section-subtitle">Selecciona una geometría para comparar dimensiones, temperaturas Kelvin y precios</p>
+  </div>
+
+  <!-- Shape Filter Bar -->
+  <div class="filter-bar" id="shape-filter-bar">
+    <a href="?#catalogo" class="filter-btn {% if not forma_actual %}active{% endif %}" id="filter-all">
+      Todos los Diseños
+    </a>
+    {% for val, label in formas %}
+      <a href="?forma={{ val }}#catalogo" class="filter-btn {% if forma_actual == val %}active{% endif %}" id="filter-shape-{{ val }}">
+        {{ label }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Product Cards Grid with Prices -->
+  <div class="product-grid" id="product-grid">
+    {% for espejo in espejos %}
+      <article class="product-card" id="product-card-{{ espejo.id }}">
+        <div class="product-image-box">
+          {% if espejo.destacado %}
+            <span class="badge-featured">DESTAQUE BRALUMA</span>
+          {% endif %}
+          
+          {% if espejo.primera_imagen %}
+            <img src="{{ espejo.primera_imagen }}" alt="{{ espejo.nombre }}" loading="lazy">
+          {% else %}
+            <div class="placeholder-mirror-art">
+              <span>{{ espejo.ancho_cm }}x{{ espejo.alto_cm }} CM</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="product-info">
+          <span class="product-shape-tag">{{ espejo.get_forma_display }} &bull; {{ espejo.ancho_cm }}x{{ espejo.alto_cm }} cm</span>
+          <h3 class="product-title">{{ espejo.nombre }}</h3>
+          
+          <!-- Kelvin Visual Dial Bar -->
+          <div class="kelvin-dial-wrapper">
+            <div class="kelvin-dial-label">
+              <span>CÁLIDO {{ espejo.temperatura_min_k }}K</span>
+              <span>FRÍO {{ espejo.temperatura_max_k }}K</span>
+            </div>
+            <div class="kelvin-track-bar" data-min="{{ espejo.temperatura_min_k }}" data-max="{{ espejo.temperatura_max_k }}">
+              <div class="kelvin-marker-highlight"></div>
+            </div>
+          </div>
+
+          <!-- Feature Specs -->
+          <div class="product-specs-summary">
+            {% if espejo.regulable %}
+              <span>⚡ Dimmer Touch</span>
+            {% endif %}
+            {% if espejo.antivaho %}
+              <span>♨️ Antivaho</span>
+            {% endif %}
+          </div>
+
+          <div class="product-footer">
+            <div class="product-price">
+              S/ {{ espejo.precio }} <span>PEN</span>
+            </div>
+            <a href="{% url 'espejo_detail' espejo.slug %}" class="btn-primary" style="padding: 0.55rem 1.2rem; font-size: 0.85rem;" id="btn-detail-{{ espejo.id }}">
+              Ficha Técnica
+            </a>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
+        <p style="font-size: 1.2rem;">No se encontraron espejos con los criterios seleccionados.</p>
+        <a href="?#catalogo" class="btn-primary" style="margin-top: 1rem;">Ver Todos los Modelos</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/hero_parallax.js' %}"></script>
+{% endblock %}

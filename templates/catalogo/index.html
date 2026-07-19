@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Braluma — Espejos LED Arquitectónicos | Catálogo Exclusivo{% endblock %}
+
+{% block content %}
+<!-- Apple-Style Hero Section (Clean, Controlled, Zero Text Overlap) -->
+<section class="hero-container" id="hero-section">
+  <!-- Vignette overlay -->
+  <div class="hero-vignette"></div>
+
+  <!-- Ambient Glow -->
+  <div class="hero-glow-layer"></div>
+
+  <!-- Text Content Stack (Headline, Subtitle, CTA buttons) -->
+  <div class="hero-content-stack">
+    <p class="hero-eyebrow" id="hero-eyebrow">
+      {{ hero_config.titulo_eyebrow|default:"ILUMINACIÓN ARQUITECTÓNICA" }}
+    </p>
+    
+    <h1 class="hero-title" id="hero-title">
+      {% if hero_config and hero_config.titulo_principal %}
+        {{ hero_config.titulo_principal|safe }}
+      {% else %}
+        La Luz que Enciende <em>tu Espacio</em>
+      {% endif %}
+    </h1>
+
+    <p class="hero-subtitle" id="hero-subtitle">
+      {{ hero_config.subtitulo|default:"Espejos de diseño superior con iluminación LED perimetral integrada, dial de temperatura Kelvin regulable y cristal antivaho." }}
+    </p>
+
+    <div class="hero-cta-group" id="hero-cta-group">
+      {% if hero_config and hero_config.espejo_vinculado %}
+        <a href="{% url 'espejo_detail' hero_config.espejo_vinculado.slug %}" class="btn-primary" id="btn-explore-catalog">
+          Cotizar {{ hero_config.espejo_vinculado.nombre }} &rarr;
+        </a>
+      {% else %}
+        <a href="#destacado-sticky" class="btn-primary" id="btn-explore-catalog">
+          Descubrir Tecnología &rarr;
+        </a>
+      {% endif %}
+      
+      <a href="#catalogo" class="btn-outline" id="btn-view-models">
+        Ver Catálogo Completo
+      </a>
+    </div>
+
+    <!-- Hero Mirror Stage (Clean spacing below CTAs, zero overlap) -->
+    <div class="hero-mirror-stage" id="hero-mirror-stage">
+      <img src="{% if hero_config and hero_config.imagen_hero %}{{ hero_config.imagen_hero.url }}{% else %}{% static 'images/default_hero_mirror.jpg' %}{% endif %}" 
+           alt="Espejo Hero Braluma" 
+           style="object-position: {{ hero_config.posicion_imagen|default:'center center' }};">
+    </div>
+  </div>
+</section>
+
+<!-- Apple-Style Sticky Featured Product Scroll Section -->
+<section class="sticky-feature-section" id="destacado-sticky">
+  <div class="sticky-viewport-wrapper">
+    <div class="sticky-grid">
+      <!-- Media Stage (Pinned Mirror Image with progressive zoom) -->
+      <div class="sticky-media-col">
+        <div class="sticky-mirror-frame">
+          <img id="sticky-mirror-img" 
+               src="{% if hero_config and hero_config.imagen_hero %}{{ hero_config.imagen_hero.url }}{% else %}{% static 'images/default_hero_mirror.jpg' %}{% endif %}" 
+               alt="Braluma LED Mirror Showcase">
+        </div>
+      </div>
+
+      <!-- Text Step Cards (Progressive Opacity/Scale Step Animations) -->
+      <div class="sticky-text-col">
+        <!-- Step 1: Overall Design -->
+        <div class="sticky-step-card active" id="sticky-step-1">
+          <span class="sticky-step-badge">DISEÑO ARQUITECTÓNICO</span>
+          <h2 class="sticky-step-headline">Ingeniería de Luz Pura.</h2>
+          <p class="sticky-step-desc">
+            Cada espejo Braluma combina cristal reflectante de alta definición con un bastidor de iluminación LED continua de 360 grados.
+          </p>
+        </div>
+
+        <!-- Step 2: Kelvin Temperature -->
+        <div class="sticky-step-card" id="sticky-step-2">
+          <span class="sticky-step-badge">TEMPERATURA KELVIN</span>
+          <h2 class="sticky-step-headline">De Ámbar Cálido a Blanco Frío.</h2>
+          <p class="sticky-step-desc">
+            Graduación milimétrica desde 2700K para momentos relajantes hasta 6500K para iluminación de precisión técnica.
+          </p>
+        </div>
+
+        <!-- Step 3: Antivaho System -->
+        <div class="sticky-step-card" id="sticky-step-3">
+          <span class="sticky-step-badge">DEFROSTER INTEGRADO</span>
+          <h2 class="sticky-step-headline">Visión 100% Clara Siempre.</h2>
+          <p class="sticky-step-desc">
+            El sistema antivaho térmico desempaña el cristal de manera uniforme en segundos tras cada ducha de vapor.
+          </p>
+        </div>
+
+        <!-- Step 4: Touch Control CTA -->
+        <div class="sticky-step-card" id="sticky-step-4">
+          <span class="sticky-step-badge">CONTROL TOUCH</span>
+          <h2 class="sticky-step-headline">Encendido Inteligente y Dimmer.</h2>
+          <p class="sticky-step-desc" style="margin-bottom: 1.5rem;">
+            Sensores capacitivos integrados bajo el cristal para un control de iluminación fluido y sin cables visibles.
+          </p>
+          <div>
+            <a href="#catalogo" class="btn-primary">Explorar Espejos Braluma &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Product Catalog Section (Clean Grid Layout) -->
+<section class="catalog-section" id="catalogo">
+  <div class="section-header">
+    <h2 class="section-title">Colección Braluma</h2>
+    <p class="section-subtitle">Selecciona una geometría o examina nuestra línea de iluminación arquitectónica</p>
+  </div>
+
+  <!-- Shape Filter Bar -->
+  <div class="filter-bar" id="shape-filter-bar">
+    <a href="?#catalogo" class="filter-btn {% if not forma_actual %}active{% endif %}" id="filter-all">
+      Todos los Diseños
+    </a>
+    {% for val, label in formas %}
+      <a href="?forma={{ val }}#catalogo" class="filter-btn {% if forma_actual == val %}active{% endif %}" id="filter-shape-{{ val }}">
+        {{ label }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Product Cards Grid -->
+  <div class="product-grid" id="product-grid">
+    {% for espejo in espejos %}
+      <article class="product-card" id="product-card-{{ espejo.id }}">
+        <div class="product-image-box">
+          {% if espejo.destacado %}
+            <span class="badge-featured">DESTAQUE BRALUMA</span>
+          {% endif %}
+          
+          {% if espejo.primera_imagen %}
+            <img src="{{ espejo.primera_imagen }}" alt="{{ espejo.nombre }}" loading="lazy">
+          {% else %}
+            <div class="placeholder-mirror-art">
+              <span>{{ espejo.ancho_cm }}x{{ espejo.alto_cm }} CM</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="product-info">
+          <span class="product-shape-tag">{{ espejo.get_forma_display }} &bull; {{ espejo.ancho_cm }}x{{ espejo.alto_cm }} cm</span>
+          <h3 class="product-title">{{ espejo.nombre }}</h3>
+          
+          <!-- Kelvin Visual Dial Bar -->
+          <div class="kelvin-dial-wrapper">
+            <div class="kelvin-dial-label">
+              <span>CÁLIDO {{ espejo.temperatura_min_k }}K</span>
+              <span>FRÍO {{ espejo.temperatura_max_k }}K</span>
+            </div>
+            <div class="kelvin-track-bar" data-min="{{ espejo.temperatura_min_k }}" data-max="{{ espejo.temperatura_max_k }}">
+              <div class="kelvin-marker-highlight"></div>
+            </div>
+          </div>
+
+          <!-- Feature Specs -->
+          <div class="product-specs-summary">
+            {% if espejo.regulable %}
+              <span>⚡ Dimmer Touch</span>
+            {% endif %}
+            {% if espejo.antivaho %}
+              <span>♨️ Antivaho</span>
+            {% endif %}
+          </div>
+
+          <div class="product-footer">
+            <div class="product-price">
+              S/ {{ espejo.precio }} <span>PEN</span>
+            </div>
+            <a href="{% url 'espejo_detail' espejo.slug %}" class="btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem;" id="btn-detail-{{ espejo.id }}">
+              Ficha Técnica
+            </a>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
+        <p style="font-size: 1.2rem;">No se encontraron espejos con los criterios seleccionados.</p>
+        <a href="?#catalogo" class="btn-primary" style="margin-top: 1rem;">Ver Todos los Modelos</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/hero_parallax.js' %}"></script>
+{% endblock %}

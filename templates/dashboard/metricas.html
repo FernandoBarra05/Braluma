@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Braluma — Dashboard de Métricas Internas (Staff){% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span class="product-shape-tag" style="color: var(--accent-amber);">PANEL ADMINISTRATIVO &bull; STAFF ONLY</span>
+      <h1 class="font-title" style="font-size: 2.5rem;">Métricas de Negocio Braluma</h1>
+    </div>
+    <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); background: var(--bg-card); padding: 0.6rem 1.2rem; border-radius: var(--radius-full); border: 1px solid var(--border-subtle);">
+      Usuario Staff: <strong style="color: var(--text-primary);">{{ user.username }}</strong>
+    </div>
+  </div>
+
+  <!-- KPI Metric Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card" id="kpi-total-leads">
+      <div class="kpi-icon">📋</div>
+      <div>
+        <div class="kpi-value" style="color: var(--accent-amber);">{{ total_leads }}</div>
+        <div class="kpi-label">Leads Capturados (Totales)</div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpi-uncontacted-leads" style="--accent-amber: #e67e22;">
+      <div class="kpi-icon" style="background: rgba(230, 126, 34, 0.1); color: #e67e22;">⏳</div>
+      <div>
+        <div class="kpi-value" style="color: #e67e22;">{{ leads_nuevos }}</div>
+        <div class="kpi-label">Leads Sin Contactar (Nuevos)</div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpi-active-products" style="--accent-amber: #27ae60;">
+      <div class="kpi-icon" style="background: rgba(39, 174, 96, 0.1); color: #27ae60;">💡</div>
+      <div>
+        <div class="kpi-value" style="color: #27ae60;">{{ productos_activos }}</div>
+        <div class="kpi-label">Productos Activos en Catálogo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Charts Grid (Chart.js) -->
+  <div class="charts-grid">
+    <!-- Chart 1: Line Chart (Leads per week) -->
+    <div class="chart-card">
+      <h3 class="chart-title">
+        <span>📈</span> Tendencia de Leads por Semana (Últimas 8 Semanas)
+      </h3>
+      <div style="position: relative; height: 320px; width: 100%;">
+        <canvas id="leadsWeeklyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart 2: Bar Chart (Top Consulted Mirrors) -->
+    <div class="chart-card">
+      <h3 class="chart-title">
+        <span>🏆</span> Espejos Más Consultados (por cantidad de Leads)
+      </h3>
+      <div style="position: relative; height: 320px; width: 100%;">
+        <canvas id="topMirrorsChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Chart.js global dark theme defaults
+  Chart.defaults.color = '#9a9a94';
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const semanasLabels = JSON.parse('{{ semanas_labels_json|escapejs }}');
+  const semanasData = JSON.parse('{{ semanas_data_json|escapejs }}');
+  const topLabels = JSON.parse('{{ top_espejos_labels_json|escapejs }}');
+  const topData = JSON.parse('{{ top_espejos_data_json|escapejs }}');
+
+  // 1. Line Chart: Leads por semana
+  const ctxWeekly = document.getElementById('leadsWeeklyChart');
+  if (ctxWeekly) {
+    new Chart(ctxWeekly, {
+      type: 'line',
+      data: {
+        labels: semanasLabels,
+        datasets: [{
+          label: 'Leads Capturados',
+          data: semanasData,
+          borderColor: '#ffb066',
+          backgroundColor: 'rgba(255, 176, 102, 0.15)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#ffd9a0',
+          pointRadius: 5,
+          pointHoverRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { 
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            beginAtZero: true,
+            ticks: { precision: 0 }
+          }
+        }
+      }
+    });
+  }
+
+  // 2. Bar Chart: Espejos más consultados
+  const ctxTop = document.getElementById('topMirrorsChart');
+  if (ctxTop) {
+    new Chart(ctxTop, {
+      type: 'bar',
+      data: {
+        labels: topLabels,
+        datasets: [{
+          label: 'Solicitudes / Leads',
+          data: topData,
+          backgroundColor: [
+            '#ffb066',
+            '#ffd9a0',
+            '#e67e22',
+            '#f39c12',
+            '#d35400'
+          ],
+          borderRadius: 6,
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: { 
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            beginAtZero: true,
+            ticks: { precision: 0 }
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}
